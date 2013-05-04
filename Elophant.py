@@ -9,7 +9,7 @@ import json
 """
 Make sure to put in your API Key
 """
-apiKey = 'Put in your API Key'
+apiKey = 'Put in your API key'
 
 """
 The function to get summoner stats and return them.
@@ -54,4 +54,4 @@ def summonerLeagues(region, summonerName):
 			wins = leagueJSON['data']['summonerLeagues'][0]['entries'][0]['wins']
 			return { 'summonerName': summonerName, 'tier': tier, 'league': league, 'rank': rank, 'previousDayLeaguePosition': previousDayLeaguePosition, 'hotStreak': hotStreak, 'freshBlood': freshBlood, 'lastPlayed': lastPlayed, 'playerOrTeamId': playerOrTeamId, 'inactive': inactive, 'veteran': veteran, 'queueType': queueType, 'losses': losses, 'playerOrTeamName': playerOrTeamName, 'wins': wins }
 		except:
-			return { 'fail': 'Failed to get ranked stats.' }
+			return { 'fail': 'User is NOT ranked or an error has occured.' }
