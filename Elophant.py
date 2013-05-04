@@ -9,7 +9,7 @@ import json
 """
 Make sure to put in your API Key
 """
-apiKey = 'Put in your API key'
+apiKey = 'Your API Key'
 
 """
 The function to get summoner stats and return them.
@@ -40,18 +40,8 @@ def summonerLeagues(region, summonerName):
 			leagueJSON = json.load(leagueURLOpen)
 			tier = leagueJSON['data']['summonerLeagues'][0]['tier']
 			league = leagueJSON['data']['summonerLeagues'][0]['name']
-			rank = leagueJSON['data']['summonerLeagues'][0]['entries'][0]['rank']
-			previousDayLeaguePosition = leagueJSON['data']['summonerLeagues'][0]['entries'][0]['previousDayLeaguePosition']
-			hotStreak = leagueJSON['data']['summonerLeagues'][0]['entries'][0]['hotStreak']
-			freshBlood = leagueJSON['data']['summonerLeagues'][0]['entries'][0]['freshBlood']
-			lastPlayed = leagueJSON['data']['summonerLeagues'][0]['entries'][0]['lastPlayed']
-			playerOrTeamId = leagueJSON['data']['summonerLeagues'][0]['entries'][0]['playerOrTeamId']
-			inactive = leagueJSON['data']['summonerLeagues'][0]['entries'][0]['inactive']
-			veteran = leagueJSON['data']['summonerLeagues'][0]['entries'][0]['veteran']
-			queueType = leagueJSON['data']['summonerLeagues'][0]['entries'][0]['queueType']
-			losses = leagueJSON['data']['summonerLeagues'][0]['entries'][0]['losses']
 			playerOrTeamName = leagueJSON['data']['summonerLeagues'][0]['entries'][0]['playerOrTeamName']
-			wins = leagueJSON['data']['summonerLeagues'][0]['entries'][0]['wins']
-			return { 'summonerName': summonerName, 'tier': tier, 'league': league, 'rank': rank, 'previousDayLeaguePosition': previousDayLeaguePosition, 'hotStreak': hotStreak, 'freshBlood': freshBlood, 'lastPlayed': lastPlayed, 'playerOrTeamId': playerOrTeamId, 'inactive': inactive, 'veteran': veteran, 'queueType': queueType, 'losses': losses, 'playerOrTeamName': playerOrTeamName, 'wins': wins }
+			requestorsRank = leagueJSON['data']['summonerLeagues'][0]['requestorsRank']
+			return { 'requestorsRank': requestorsRank, 'summonerName': summonerName, 'tier': tier, 'league': league, 'rank': rank }
 		except:
 			return { 'fail': 'User is NOT ranked or an error has occured.' }

@@ -21,18 +21,7 @@ tier = Elophant.summonerLeagues(region, summonerName)
 try:
 	print(' ')
 	print summonerName, 'ranked stats: '
-	print tier['tier'], tier['league'], tier['rank']
-	print tier['previousDayLeaguePosition']
-	print tier['hotStreak']
-	print tier['freshBlood']
-	print tier['lastPlayed']
-	print tier['playerOrTeamId']
-	print tier['inactive']
-	print tier['veteran']
-	print tier['queueType']
-	print tier['losses']
-	print tier['playerOrTeamName']
-	print tier['wins']
+	print tier['tier'], tier['league'], tier['requestorsRank']
 except:
 	print tier['fail']
 	pass
