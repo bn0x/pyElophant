@@ -1,16 +1,33 @@
+"""
+Import our module 
+"""
+
 import Elophant
 
+"""
+Getting inputs to store in variables
+"""
+
 summonerName = raw_input("Summoner Name: ")
-#summonerName = str(summonerName)
 region = raw_input("Region: ")
-#region = str(region)
+
+"""
+Call the function to get data.
+"""
+
 stats = Elophant.SummonerStats(region, summonerName)
+
+"""
+Check if it failed. (Python exception)
+"""
 try:
 	if stats['fail']:
 		print stats['fail']
 except:
 	pass
-
+"""
+Print the output from the API
+"""
 print stats['summonerLevel']
 print stats['name']
 print stats['internalName']
