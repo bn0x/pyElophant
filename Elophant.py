@@ -5,7 +5,6 @@ Import our modules
 import urllib2
 import urllib
 import json
-import socket
 
 """
 Make sure to put in your API Key
@@ -54,5 +53,5 @@ def summonerLeagues(region, summonerName):
 			playerOrTeamName = leagueJSON['data']['summonerLeagues'][0]['entries'][0]['playerOrTeamName']
 			wins = leagueJSON['data']['summonerLeagues'][0]['entries'][0]['wins']
 			return { 'summonerName': summonerName, 'tier': tier, 'league': league, 'rank': rank, 'previousDayLeaguePosition': previousDayLeaguePosition, 'hotStreak': hotStreak, 'freshBlood': freshBlood, 'lastPlayed': lastPlayed, 'playerOrTeamId': playerOrTeamId, 'inactive': inactive, 'veteran': veteran, 'queueType': queueType, 'losses': losses, 'playerOrTeamName': playerOrTeamName, 'wins': wins }
-		except socket.error:
+		except:
 			return { 'fail': 'Failed to get ranked stats.' }
