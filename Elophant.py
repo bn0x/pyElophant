@@ -77,6 +77,7 @@ def teamLookup(region, teamName):
 	try:
 		if ' ' in teamName:
 			teamName = teamName.replace(' ', '%20')
+		
 		apiURL = 'http://api.elophant.com/v2/' + region + '/' + 'find_team' + '/' + teamName + '?key=' + apiKey
 		teamURLOpen = urllib2.urlopen(apiURL)
 		teamJSON = json.load(teamURLOpen)
@@ -93,7 +94,7 @@ def teamLookup(region, teamName):
 		else:
 			return { 'fail': 'Failed to find team\'s 5v5 ranked record.' }
 
-		return { 'losses': losses, 'wins': wins}
+		return { 'losses': losses, 'wins': wins }
 	
 	except:
 		return { 'fail': 'Failed to find team\'s 5v5 ranked record.' }
