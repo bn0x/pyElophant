@@ -5,11 +5,12 @@ Import our modules
 import urllib2
 import urllib
 import json
+import socket
 
 """
 Make sure to put in your API Key
 """
-apiKey = 'Your API Key'
+apiKey = ''
 
 """
 The function to get summoner stats and return them.
@@ -27,21 +28,63 @@ def summonerStats(region, requestData):
 	except:
 		return { 'fail': 'Failed to get summoner stats.' }
 
+"""
+Ranked stats
+Plan on cleaning up the tier output maybe soon.
+Currently only gets the requested users data.
+Doing points and stuff on another day.
+"""
+
 def summonerLeagues(region, summonerName):
-		try:
-			if ' ' in summonerName:
-				summonerName = summonerName.replace(' ', '%20')
-			apiURL = 'http://api.elophant.com/v2/' + region + '/' + 'summoner' + '/' + summonerName + '?key=' + apiKey
-			summonerURLOpen = urllib2.urlopen(apiURL)
-			summonerJSON = json.load(summonerURLOpen)
-			summonerID = summonerJSON['data']['summonerId']
-			leagueURL = 'http://api.elophant.com/v2/' + region + '/' + 'leagues' + '/' + str(summonerID) + '?key=' + apiKey
-			leagueURLOpen = urllib2.urlopen(leagueURL)
-			leagueJSON = json.load(leagueURLOpen)
-			tier = leagueJSON['data']['summonerLeagues'][0]['tier']
-			league = leagueJSON['data']['summonerLeagues'][0]['name']
-			playerOrTeamName = leagueJSON['data']['summonerLeagues'][0]['entries'][0]['playerOrTeamName']
-			requestorsRank = leagueJSON['data']['summonerLeagues'][0]['requestorsRank']
-			return { 'requestorsRank': requestorsRank, 'summonerName': summonerName, 'tier': tier, 'league': league, 'rank': rank }
-		except:
-			return { 'fail': 'User is NOT ranked or an error has occured.' }
+	try:
+		if ' ' in summonerName:
+			summonerName = summonerName.replace(' ', '%20')
+		apiURL = 'http://api.elophant.com/v2/' + region + '/' + 'summoner' + '/' + summonerName + '?key=' + apiKey
+		summonerURLOpen = urllib2.urlopen(apiURL)
+		summonerJSON = json.load(summonerURLOpen)
+		summonerID = summonerJSON['data']['summonerId']
+		leagueURL = 'http://api.elophant.com/v2/' + region + '/' + 'leagues' + '/' + str(summonerID) + '?key=' + apiKey
+		leagueURLOpen = urllib2.urlopen(leagueURL)
+		leagueJSON = json.load(leagueURLOpen)
+		tier = leagueJSON['data']['summonerLeagues'][0]['tier']
+		league = leagueJSON['data']['summonerLeagues'][0]['name']
+		playerOrTeamName = leagueJSON['data']['summonerLeagues'][0]['entries'][0]['playerOrTeamName']
+		requestorsRank = leagueJSON['data']['summonerLeagues'][0]['requestorsRank']
+		return { 'requestorsRank': requestorsRank, 'summonerName': summonerName, 'tier': tier, 'league': league, 'rank': rank }
+	except:
+		return { 'fail': 'User is NOT ranked or an error has occured.' }
+
+"""
+Team 5v5 win/loss lookup
+Rating isn't included as it seems broken on Elophant.
+
+I'll eventually write in 3v3 and whatever the fuck ODIN means...
+Roster too... as this is a libary and not just for my personal needs I guess.
+
+I'm aware this if-else tree is ugly but I'm really bad at scripting/programming so if you use this just bear with it.
+"""
+
+
+def teamLookup(region, teamName):
+	try:
+		if ' ' in teamName:
+			teamName = teamName.replace(' ', '%20')
+		apiURL = 'http://api.elophant.com/v2/' + region + '/' + 'find_team' + '/' + teamName + '?key=' + apiKey
+		teamURLOpen = urllib2.urlopen(apiURL)
+		teamJSON = json.load(teamURLOpen)
+
+		if 'RANKED_TEAM_5x5' in teamJSON['data']['teamStatSummary']['teamStatDetails'][0]['teamStatType']:
+			wins = teamJSON['data']['teamStatSummary']['teamStatDetails'][0]['wins']
+			losses = teamJSON['data']['teamStatSummary']['teamStatDetails'][0]['losses']
+		elif 'RANKED_TEAM_5x5' in teamJSON['data']['teamStatSummary']['teamStatDetails'][1]['teamStatType']:
+			wins = teamJSON['data']['teamStatSummary']['teamStatDetails'][1]['wins']
+			losses = teamJSON['data']['teamStatSummary']['teamStatDetails'][1]['losses']
+		elif 'RANKED_TEAM_5x5' in teamJSON['data']['teamStatSummary']['teamStatDetails'][2]['teamStatType']:
+			wins = teamJSON['data']['teamStatSummary']['teamStatDetails'][2]['wins']
+			losses = teamJSON['data']['teamStatSummary']['teamStatDetails'][2]['losses']
+		else:
+			return { 'fail': 'Failed to find team\'s 5v5 ranked record.' }
+
+		return { 'losses': losses, 'wins': wins}
+	except:
+		return { 'fail': 'Failed to find team\'s 5v5 ranked record.' }
