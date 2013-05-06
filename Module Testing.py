@@ -25,9 +25,6 @@ try:
 except:
 	print tier['fail']
 	pass
-"""
-Check if it failed. (Python exception)
-"""
 
 """
 Print the output from the API
