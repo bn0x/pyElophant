@@ -9,7 +9,7 @@ import json
 """
 Make sure to put in your API Key
 """
-apiKey = 'Your api key'
+apiKey = 'Your API Key'
 
 """
 The function to get summoner stats and return them.
@@ -21,7 +21,7 @@ def summonerStats(region, requestData):
 		if ' ' in requestData:
 			requestData = requestData.replace(' ', '%20')
 		
-		apiURL = 'http://api.elophant.com/v2/' + region + '/' + 'summoner' + '/' + requestData + '?key=' + apiKey
+		apiURL = 'http://api.elophant.com/v2/%s/summoner/%s?key=%s' % (region, requestData, apiKey)
 		summonerURLOpen = urllib2.urlopen(apiURL)
 		summonerJSON = json.load(summonerURLOpen)
 		
@@ -42,7 +42,7 @@ def summonerLeagues(region, summonerName):
 		if ' ' in summonerName:
 			summonerName = summonerName.replace(' ', '%20')
 		
-		apiURL = 'http://api.elophant.com/v2/' + region + '/' + 'summoner' + '/' + summonerName + '?key=' + apiKey
+		apiURL = 'http://api.elophant.com/v2/%s/summoner/%s?key=%s' % (region, summonerName, apiKey)
 		summonerURLOpen = urllib2.urlopen(apiURL)
 		summonerJSON = json.load(summonerURLOpen)
 		
@@ -78,23 +78,29 @@ def teamLookup(region, teamName):
 		if ' ' in teamName:
 			teamName = teamName.replace(' ', '%20')
 		
-		apiURL = 'http://api.elophant.com/v2/' + region + '/' + 'find_team' + '/' + teamName + '?key=' + apiKey
+		apiURL = 'http://api.elophant.com/v2/%s/find_team/%s?key=%s' % (region, teamName, apiKey)
+		print apiURL
 		teamURLOpen = urllib2.urlopen(apiURL)
 		teamJSON = json.load(teamURLOpen)
+		statDetails = teamJSON['data']['teamStatSummary']['teamStatDetails']
 
-		if 'RANKED_TEAM_5x5' in teamJSON['data']['teamStatSummary']['teamStatDetails'][0]['teamStatType']:
-			wins = teamJSON['data']['teamStatSummary']['teamStatDetails'][0]['wins']
-			losses = teamJSON['data']['teamStatSummary']['teamStatDetails'][0]['losses']
-		elif 'RANKED_TEAM_5x5' in teamJSON['data']['teamStatSummary']['teamStatDetails'][1]['teamStatType']:
-			wins = teamJSON['data']['teamStatSummary']['teamStatDetails'][1]['wins']
-			losses = teamJSON['data']['teamStatSummary']['teamStatDetails'][1]['losses']
-		elif 'RANKED_TEAM_5x5' in teamJSON['data']['teamStatSummary']['teamStatDetails'][2]['teamStatType']:
-			wins = teamJSON['data']['teamStatSummary']['teamStatDetails'][2]['wins']
-			losses = teamJSON['data']['teamStatSummary']['teamStatDetails'][2]['losses']
-		else:
+		wins5, losses5, wins3, losses3 = -1, -1, -1, -1
+		
+		for index in range(0, 3):
+				if 'RANKED_TEAM_5x5' in statDetails[index]['teamStatType']:
+					wins5 = statDetails[index]['wins']
+					losses5 = statDetails[index]['losses']
+					break
+
+		for index in range(0, 3):
+				if 'RANKED_TEAM_3x3' in statDetails[index]['teamStatType']:
+					wins3 = statDetails[index]['wins']
+					losses3 = statDetails[index]['losses']
+					break
+
+		if wins5 == -1:
 			return { 'fail': 'Failed to find team\'s 5v5 ranked record.' }
+		return { 'losses5': losses5, 'wins5': wins5, 'wins3': wins3, 'losses3': losses3 }
 
-		return { 'losses': losses, 'wins': wins }
-	
 	except:
 		return { 'fail': 'Failed to find team\'s 5v5 ranked record.' }
